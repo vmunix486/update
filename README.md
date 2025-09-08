@@ -7,7 +7,7 @@ It looks in /etc/os-release and sees what distrobution you are running, it then 
 
 # Why?
 
-As a easy first project. It might be a little helpful if your distro has a lot of commands needed to update (eg. Gentoo). If your distribution is not in the list of the script you can add it in.
+As a easy first project. It might be a little helpful if your distro has a lot of commands needed to update (eg. Gentoo). It's my first time using github, so if I'm doing something wrong, please tell me.
 
 # How do I add a new distribution?
 
