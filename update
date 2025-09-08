@@ -1,9 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-if [[ $EUID -ne 0 ]]; then
-	echo "This must be run as root. Do (sudo update) or run update while logged in as root"
-	exit 1
+# Root Check
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Plz run as root. Do (sudo update) or just login as root and run it."
+    exit 1
 fi
+
 
 reboot_after=false
 
