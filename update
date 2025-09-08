@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+if [[ $EUID -ne 0 ]]; then
+	echo "This must be run as root. Do (sudo update) or run update while logged in as root"
+	exit 1
+fi
+
+reboot_after=false
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        -r|--reboot)
+            reboot_after=true
+            shift
+            ;;
+        *)
+            echo "Usage: $0 [-r|--reboot]"
+            exit 1
+            ;;
+    esac
+done
+
+# Detect distribution from /etc/os-release
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    distro=$ID
+else
+    echo "Cannot detect distribution (missing /etc/os-release)"
+    exit 1
+fi
+
+# Run updates depending on distro
+case "$distro" in
+    debian|ubuntu|devuan)
+        echo "Detected $distro — using aptitude"
+        apt-get update -y
+        apt-get upgrade -y
+        ;;
+    fedora|RHEL)
+        echo "Detected $distro — using dnf"
+        dnf up -y
+        ;;
+    alpine)
+    	echo "Detected $distro - using apk"
+	apk update
+	apk upgrade
+	;;
+    gentoo)
+	echo "Detected Gentoo - using emerge/portage"
+	emaint --auto sync
+	emerge --ask --verbose --update --deep --newuse @world
+	echo "If failed, run (emerge -avuDN --backtrack N @world (N is a number, wiki recommends 30)"
+	echo "If needed, run dispatch-conf"
+	echo "Run (emerge --depclean) if you want to. The wiki says it could blow up your kernel"
+	;;
+    arch)
+	echo "Detected $distro - using pacman"
+	pacman -Syu
+	;;
+    slackware)
+	echo "Detected $distro - using slackpkg"
+	slackpkg update gpg
+	slackpkg update
+	slackpkg upgrade-all
+	echo "To see the changelog, run (slackpkg show changelog)"
+	;;
+    *)
+        echo "Unsupported distribution: $distro. Read README.md at Github."
+        exit 1
+        ;;
+esac
+
+# Reboot if requested
+if [ "$reboot_after" = true ]; then
+    echo "Rebooting..."
+    reboot
+fi
+
