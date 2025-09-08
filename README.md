@@ -3,7 +3,7 @@ An simple bash script meant to automatically run the update command on as many d
 
 # What does it do?
 
-It looks in /etc/os-release and sees what distrobution you are running, it then runs the commands needed to update the distribution.
+It looks in /etc/os-release and sees what distrobution you are running, it then runs the commands needed to update the distribution. If you want to reboot after updating, add -r or --reboot.
 
 # Why?
 
