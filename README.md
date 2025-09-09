@@ -23,7 +23,7 @@ Make an issuse with the following critera:
 
 # What distributions are supported?
 
-At the moment, only the following distros are supported:
+At the moment, only the following distribution are supported:
 
 - Debian
 - Devuan
@@ -41,5 +41,5 @@ At the moment, only the following distros are supported:
 # TODO?
 
  - Add more support.
- - Add BSD support
- - Add Install Script
+ - Add BSD support (FreeBSD: 9/8/25)
+ - Add Install Script (Finished; 9/9/25)
