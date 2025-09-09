@@ -36,15 +36,15 @@ fi
 # Run updates depending on distro
 case "$distro" in
     debian|ubuntu|devuan)
-        echo "Detected $distro — using aptitude"
+        echo "Detected $distro — using Aptitude"
         apt-get update -y
         apt-get upgrade -y
         ;;
     fedora|RHEL)
-        echo "Detected $distro — using dnf"
+        echo "Detected $distro — using Dandified Yum (dnf)"
         dnf up -y
         ;;
-    alpine)
+    alpine|adelie)
     	echo "Detected $distro - using apk"
 	apk update
 	apk upgrade
@@ -67,6 +67,19 @@ case "$distro" in
 	slackpkg update
 	slackpkg upgrade-all
 	echo "To see the changelog, run (slackpkg show changelog)"
+	;;
+    t2sde)
+	echo "Detected $distro - using T2"
+	echo "After 60 seconds, this script will cd into /usr/src/t2-src, then run t2 up then t2 update-system. If you don't want to compile thousands of packages, CTRL+C right now."
+	sleep 60
+	cd /usr/src/t2-src
+	t2 up
+	t2 update-system
+	;;
+    freebsd)
+	echo "Detected $distro - using pkg"
+	pkg update
+	pkg upgrade
 	;;
     *)
         echo "Unsupported distribution: $distro. Read README.md at Github."
