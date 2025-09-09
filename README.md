@@ -11,7 +11,10 @@ As a easy first project. It might be a little helpful if your distribution has a
 
 # How do I add a new distribution?
 
-Easy. You just add an issue stating what distribution you want to add, and what commands update the system.
+Make an issuse with the following critera:
+ - Name of distribution
+ - If it is based on another distribution (eg. Devuan -> Debian)
+ - Package manager, and the required options to update and upgrade the packages 
 
 # Requirements?
 
