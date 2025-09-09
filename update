@@ -1,12 +1,6 @@
 #!/bin/sh
 
-# Root Check
-
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Plz run as root. Do (sudo update) or just login as root and run it."
-    exit 1
-fi
-
+VERSION=1.0.4
 
 reboot_after=false
 
@@ -17,12 +11,35 @@ for arg in "$@"; do
             reboot_after=true
             shift
             ;;
+        -v|--version)
+            echo "update.sh version $VERSION. By vmunix"
+            exit 0
+            ;;
+        -h|--help)
+            echo "Usage: $0 [-r|--reboot] [-v|--version] [-h|--help]"
+            exit 0
+            ;;
         *)
-            echo "Usage: $0 [-r|--reboot]"
+            echo "Unknown option: $arg"
+            echo "Usage: $0 [-r|--reboot] [-v|--version] [-h|--help]"
             exit 1
             ;;
     esac
 done
+
+# Print version string
+
+#if [ "$version" = true ]; then
+	#echo "Version 1.04"
+	#exit 1
+#fi
+
+# Root Check
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Plz run as root. Do (sudo update) or just login as root and run it."
+    exit 1
+fi
 
 # Detect distribution from /etc/os-release
 if [ -f /etc/os-release ]; then
