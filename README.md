@@ -34,6 +34,9 @@ At the moment, only the following distros are supported:
 - Fedora
 - RHEL
 - Slackware
+- Adelie
+- FreeBSD
+- T2 SDE
 
 # TODO?
 
