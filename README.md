@@ -14,6 +14,7 @@ As a easy first project. It might be a little helpful if your distribution has a
 Make an issuse with the following critera:
  - Name of distribution
  - If it is based on another distribution (eg. Devuan -> Debian)
+ - Contents of /etc/os-release
  - Package manager, and the required options to update and upgrade the packages 
 
 # Requirements?
