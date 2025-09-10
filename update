@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=1.0.4
+VERSION=1.0.5
 
 reboot_after=false
 
@@ -46,9 +46,30 @@ if [ -f /etc/os-release ]; then
     . /etc/os-release
     distro=$ID
 else
-    echo "Cannot detect distribution (missing /etc/os-release)"
-    exit 1
+	# Use uname if no /etc/os-release
+	kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
+	case "$kernel" in
+		netbsd)
+			distro="netbsd"
+			;;
+		freebsd)
+			distro="freebsd"
+			;;
+		openbsd)
+			distro="openbsd"
+			;;
+		*)
+		  echo "Cannot detect Unix-like OS (Unknown kernel: $kernel)"
+		  exit 1
+		  ;;
+	esac
 fi
+
+# Old Way
+#else
+#    echo "Cannot detect distribution (missing /etc/os-release)"
+#    exit 1
+#fi
 
 # Run updates depending on distro
 case "$distro" in
@@ -98,10 +119,15 @@ case "$distro" in
 	pkg update
 	pkg upgrade
 	;;
-    *)
-        echo "Unsupported distribution: $distro. Read README.md at Github."
-        exit 1
-        ;;
+    netbsd)
+	echo "Detected $distro - using pkgin"
+	pkgin -y update
+	pkgin -y upgrade
+	;;
+#    *)
+#        echo "Unsupported distribution: $distro. Read README.md at Github."
+#        exit 1
+#        ;;
 esac
 
 # Reboot if requested
@@ -109,4 +135,4 @@ if [ "$reboot_after" = true ]; then
     echo "Rebooting..."
     reboot
 fi
-
+#
