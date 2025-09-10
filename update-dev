@@ -1,0 +1,133 @@
+#!/bin/sh
+
+VERSION=1.0.5
+
+reboot_after=false
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        -r|--reboot)
+            reboot_after=true
+            shift
+            ;;
+        -v|--version)
+            echo "update.sh version $VERSION. By vmunix"
+            exit 0
+            ;;
+        -h|--help)
+            echo "Usage: $0 [-r|--reboot] [-v|--version] [-h|--help]"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $arg"
+            echo "Usage: $0 [-r|--reboot] [-v|--version] [-h|--help]"
+            exit 1
+            ;;
+    esac
+done
+
+# Print version string
+
+#if [ "$version" = true ]; then
+	#echo "Version 1.04"
+	#exit 1
+#fi
+
+# Root Check
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Plz run as root. Do (sudo update) or just login as root and run it."
+    exit 1
+fi
+
+# Detect distribution from /etc/os-release
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    distro=$ID
+else
+	# Use uname if no /etc/os-release
+	kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
+	case "$kernel" in
+		netbsd)
+			distro="netbsd"
+			;;
+		freebsd)
+			distro="freebsd"
+			;;
+		openbsd)
+			distro="openbsd"
+			;;
+		*)
+		  echo "Cannot detect Unix-like OS (Unknown kernel: $kernel)"
+		  exit 1
+		  ;;
+	esac
+fi
+
+# Old Way
+#else
+#    echo "Cannot detect distribution (missing /etc/os-release)"
+#    exit 1
+#fi
+
+# Run updates depending on distro
+case "$distro" in
+    debian|ubuntu|devuan)
+        echo "Detected $distro — using Aptitude"
+        apt-get update -y
+        apt-get upgrade -y
+        ;;
+    fedora|RHEL)
+        echo "Detected $distro — using Dandified Yum (dnf)"
+        dnf up -y
+        ;;
+    alpine|adelie)
+    	echo "Detected $distro - using apk"
+	apk update
+	apk upgrade
+	;;
+    gentoo)
+	echo "Detected Gentoo - using emerge/portage"
+	emaint --auto sync
+	emerge --ask --verbose --update --deep --newuse @world
+	echo "If failed, run (emerge -avuDN --backtrack N @world (N is a number, wiki recommends 30)"
+	echo "If needed, run dispatch-conf"
+	echo "Run (emerge --depclean) if you want to. The wiki says it could blow up your kernel"
+	;;
+    arch)
+	echo "Detected $distro - using pacman"
+	pacman -Syu
+	;;
+    slackware)
+	echo "Detected $distro - using slackpkg"
+	slackpkg update gpg
+	slackpkg update
+	slackpkg upgrade-all
+	echo "To see the changelog, run (slackpkg show changelog)"
+	;;
+    t2sde)
+	echo "Detected $distro - using T2"
+	echo "After 60 seconds, this script will cd into /usr/src/t2-src, then run t2 up then t2 update-system. If you don't want to compile thousands of packages, CTRL+C right now."
+	sleep 60
+	cd /usr/src/t2-src
+	t2 up
+	t2 update-system
+	;;
+    freebsd)
+	echo "Detected $distro - using pkg"
+	pkg update
+	pkg upgrade
+	;;
+#    *)
+#        echo "Unsupported distribution: $distro. Read README.md at Github."
+#        exit 1
+#        ;;
+esac
+
+# Reboot if requested
+if [ "$reboot_after" = true ]; then
+    echo "Rebooting..."
+    reboot
+fi
+#
