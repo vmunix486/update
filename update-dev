@@ -119,6 +119,11 @@ case "$distro" in
 	pkg update
 	pkg upgrade
 	;;
+    netbsd)
+	echo "Detected $distro - using pkgin"
+	pkgin -y update
+	pkgin -y upgrade
+	;;
 #    *)
 #        echo "Unsupported distribution: $distro. Read README.md at Github."
 #        exit 1
