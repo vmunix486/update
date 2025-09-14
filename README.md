@@ -1,5 +1,5 @@
 # update
-An simple shell script meant to automatically run the update command on as many distributions as possible.
+An simple shell script meant to automatically run the update command on as many distributions as possible. If it is not updated in a while (update being outdated rofl), it's because I'm busy or nothing under issues.
 
 # What does it do?
 
